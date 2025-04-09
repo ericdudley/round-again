@@ -1,0 +1,49 @@
+{% extends "emails/base_email.html" %}
+
+{% block subject %}Reminder to Contact {{ contact.name }}{% endblock %}
+
+{% block content %}
+<h2>Time to reconnect with {{ contact.name }}</h2>
+
+<p>Hello,</p>
+
+<p>This is a friendly reminder that it's time to get in touch with <strong>{{ contact.name }}</strong>.</p>
+
+{% if contact.days_until_due < 0 %}
+<p><strong>This contact is {{ abs(contact.days_until_due) }} days overdue.</strong> You aim to connect with them every 
+    {% if contact.frequency_value == 1 %}{{ contact.frequency_unit.value }}{% else %}{{ contact.frequency_value }} {{ contact.frequency_unit.value }}s{% endif %}.
+</p>
+{% else %}
+<p>You aim to connect with them every 
+    {% if contact.frequency_value == 1 %}{{ contact.frequency_unit.value }}{% else %}{{ contact.frequency_value }} {{ contact.frequency_unit.value }}s{% endif %}.
+</p>
+{% endif %}
+
+{% if contact.interactions %}
+<p>Your last interaction was on {{ contact.interactions|sort(attribute='interaction_date', reverse=True)|first|attr('interaction_date')|datetime }} 
+via {{ contact.interactions|sort(attribute='interaction_date', reverse=True)|first|attr('interaction_type').value }}.</p>
+{% else %}
+<p>You haven't logged any interactions with {{ contact.name }} yet.</p>
+{% endif %}
+
+{% if contact.email or contact.phone %}
+<p>Contact information:</p>
+<ul>
+    {% if contact.email %}<li>Email: {{ contact.email }}</li>{% endif %}
+    {% if contact.phone %}<li>Phone: {{ contact.phone }}</li>{% endif %}
+</ul>
+{% endif %}
+
+{% if contact.notes %}
+<p>Your notes about {{ contact.name }}:</p>
+<p><em>{{ contact.notes }}</em></p>
+{% endif %}
+
+<div style="text-align: center;">
+    <a href="{{ url_for('interactions.add_interaction', contact_id=contact.id, _external=True) }}" class="button">
+        Log New Interaction
+    </a>
+</div>
+
+<p>Maintaining relationships takes effort, but it's worth it. Keep in touch!</p>
+{% endblock %}

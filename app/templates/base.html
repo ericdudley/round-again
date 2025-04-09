@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Round Again{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX for interactive UI -->
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Navigation header -->
+    <nav class="bg-blue-600 text-white">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ url_for('dashboard.index') }}" class="text-xl font-bold">Round Again</a>
+                    <div class="hidden md:flex space-x-4">
+                        <a href="{{ url_for('dashboard.index') }}" class="hover:text-blue-200 px-3 py-2 rounded-md">Dashboard</a>
+                        <a href="{{ url_for('contacts.list_contacts') }}" class="hover:text-blue-200 px-3 py-2 rounded-md">Contacts</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <!-- Add user profile/logout buttons here if needed -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu (hidden by default) -->
+    <div class="md:hidden bg-blue-700 hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <a href="{{ url_for('dashboard.index') }}" class="text-white block px-3 py-2 rounded-md">Dashboard</a>
+            <a href="{{ url_for('contacts.list_contacts') }}" class="text-white block px-3 py-2 rounded-md">Contacts</a>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto px-4 mt-4">
+                {% for category, message in messages %}
+                    <div class="p-4 mb-4 rounded-md 
+                        {% if category == 'success' %}bg-green-100 text-green-700 border-green-400{% endif %}
+                        {% if category == 'error' %}bg-red-100 text-red-700 border-red-400{% endif %}
+                        {% if category == 'info' %}bg-blue-100 text-blue-700 border-blue-400{% endif %}
+                        {% if category == 'warning' %}bg-yellow-100 text-yellow-700 border-yellow-400{% endif %}
+                        {% if not category or category == 'message' %}bg-gray-100 text-gray-700 border-gray-400{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-200 py-6 mt-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center text-gray-600 text-sm">
+                <p>&copy; {{ now.year }} Round Again. All rights reserved.</p>
+                <p class="mt-2">A simple app to help you maintain your important relationships.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

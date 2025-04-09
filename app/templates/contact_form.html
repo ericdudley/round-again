@@ -1,0 +1,102 @@
+<div class="px-4 pt-5 pb-4 sm:p-6">
+  <div class="sm:flex sm:items-start">
+    <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        {% if contact %}Edit Contact{% else %}Add New Contact{% endif %}
+      </h3>
+      
+      <form id="contact-form" class="mt-4" hx-post="{{ url_for('contacts.create') if not contact else url_for('contacts.update', contact_id=contact.id) }}" hx-target="#contact-list" hx-swap="outerHTML">
+        {% if contact %}
+          <input type="hidden" name="id" value="{{ contact.id }}">
+        {% endif %}
+        
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+          <div class="sm:col-span-6">
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <div class="mt-1">
+              <input type="text" name="name" id="name" value="{{ contact.name if contact else '' }}" required
+                     class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+            </div>
+          </div>
+          
+          <div class="sm:col-span-3">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <div class="mt-1">
+              <input type="email" name="email" id="email" value="{{ contact.email if contact else '' }}"
+                     class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+            </div>
+          </div>
+          
+          <div class="sm:col-span-3">
+            <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+            <div class="mt-1">
+              <input type="text" name="phone" id="phone" value="{{ contact.phone if contact else '' }}"
+                     class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+            </div>
+          </div>
+          
+          <div class="sm:col-span-6">
+            <label class="block text-sm font-medium text-gray-700">Contact Frequency</label>
+            <div class="mt-1 flex items-center gap-2">
+              <input type="number" name="frequency_value" id="frequency_value" min="1" max="100" 
+                     value="{{ contact.frequency_value if contact else 1 }}" required
+                     class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-20 sm:text-sm border-gray-300 rounded-md">
+              
+              <select name="frequency_unit" id="frequency_unit" required
+                      class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block sm:text-sm border-gray-300 rounded-md">
+                {% for unit in frequency_units %}
+                  <option value="{{ unit.value }}" 
+                          {% if contact and contact.frequency_unit.value == unit.value %}selected{% endif %}>
+                    {{ unit.value }}{{ 's' if contact and contact.frequency_value != 1 or not contact }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          
+          <div class="sm:col-span-6">
+            <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+            <div class="mt-1">
+              <textarea id="notes" name="notes" rows="3"
+                        class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ contact.notes if contact else '' }}</textarea>
+            </div>
+          </div>
+        </div>
+        
+        <div class="pt-5 flex justify-end gap-3">
+          <button type="button" 
+                  class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onclick="document.getElementById('modal').classList.add('hidden')">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            {{ 'Save Changes' if contact else 'Add Contact' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('contact-form').addEventListener('submit', function(event) {
+    // After submission, close the modal
+    document.getElementById('modal').classList.add('hidden');
+  });
+  
+  // Update the frequency unit label based on frequency value
+  document.getElementById('frequency_value').addEventListener('change', function() {
+    const value = parseInt(this.value, 10);
+    const unitSelect = document.getElementById('frequency_unit');
+    const selectedOption = unitSelect.options[unitSelect.selectedIndex];
+    
+    // Update the label to be singular or plural based on the frequency value
+    const baseValue = selectedOption.value;
+    if (value === 1) {
+      selectedOption.textContent = baseValue;
+    } else {
+      selectedOption.textContent = baseValue + 's';
+    }
+  });
+</script>

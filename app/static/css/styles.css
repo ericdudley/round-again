@@ -1,0 +1,16 @@
+/* Custom styles beyond Tailwind CSS */
+
+/* Ensure that Tailwind classes take precedence */
+.text-red-600 {
+  color: #dc2626 !important;
+}
+
+.text-yellow-600 {
+  color: #d97706 !important;
+}
+
+.text-blue-600 {
+  color: #2563eb !important;
+}
+
+/* Add any additional custom styles here */

@@ -1,0 +1,68 @@
+{% extends "emails/base_email.html" %}
+
+{% block subject %}Weekly Contact Summary{% endblock %}
+
+{% block content %}
+<h2>Your Weekly Contact Summary</h2>
+
+<p>Hello,</p>
+
+<p>Here's your weekly summary of contacts that need attention and your recent activity.</p>
+
+<h3>Overdue Contacts ({{ overdue_contacts|length }})</h3>
+{% if overdue_contacts %}
+<ul>
+    {% for contact in overdue_contacts %}
+    <li>
+        <strong>{{ contact.name }}</strong> - 
+        {{ abs(contact.days_until_due) }} days overdue
+        {% if contact.interactions %}
+        (Last contact: {{ contact.interactions|sort(attribute='interaction_date', reverse=True)|first|attr('interaction_date')|datetime }})
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Great job! You have no overdue contacts.</p>
+{% endif %}
+
+<h3>Contacts Due This Week ({{ due_soon_contacts|length }})</h3>
+{% if due_soon_contacts %}
+<ul>
+    {% for contact in due_soon_contacts %}
+    <li>
+        <strong>{{ contact.name }}</strong> - 
+        {% if contact.days_until_due == 0 %}
+        Due today
+        {% else %}
+        Due in {{ contact.days_until_due }} days
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>You have no contacts due this week.</p>
+{% endif %}
+
+<h3>Recent Interactions ({{ recent_interactions|length }})</h3>
+{% if recent_interactions %}
+<ul>
+    {% for interaction in recent_interactions %}
+    <li>
+        <strong>{{ interaction.contact.name }}</strong> - 
+        {{ interaction.interaction_date|datetime }} ({{ interaction.interaction_type.value|title }})
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>You haven't had any interactions in the past week.</p>
+{% endif %}
+
+<div style="text-align: center;">
+    <a href="{{ url_for('dashboard.index', _external=True) }}" class="button">
+        View Dashboard
+    </a>
+</div>
+
+<p>Remember, consistent communication is key to maintaining meaningful relationships!</p>
+{% endblock %}

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from flask import Flask
 
-from app.models import init_db
+from app.models import init_db, Base
 from app.services.scheduler_service import init_scheduler
 
 
@@ -36,8 +36,10 @@ def create_app(test_config=None):
     )
     
     # Initialize database
+    logging.info("Setting up database...")
     db_engine = init_db(app.config['DATABASE_URL'])
     app.db_engine = db_engine
+    Base.metadata.create_all(db_engine)
     
     # Initialize scheduler
     scheduler = init_scheduler(app, db_engine)

@@ -11,7 +11,7 @@ services:
     environment:
       - FLASK_APP=run.py
       - FLASK_ENV=production
-      - DATABASE_URL=sqlite:////data/round_again.db
+      - DATABASE_URL=/data/round_again.db
       - EMAIL_HOST=${EMAIL_HOST}
       - EMAIL_PORT=${EMAIL_PORT}
       - EMAIL_USER=${EMAIL_USER}
@@ -20,3 +20,30 @@ services:
       - USER_EMAIL=${USER_EMAIL}
     restart: unless-stopped
     command: poetry run gunicorn --bind 0.0.0.0:5001 run:app
+
+  # For development only - uncomment to use in development with hot-reloading
+  # dev:
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - "5001:5001"
+  #   volumes:
+  #     - .:/app
+  #     - ./data:/data
+  #     - node_modules:/app/node_modules
+  #   environment:
+  #     - FLASK_APP=run.py
+  #     - FLASK_ENV=development
+  #     - DATABASE_URL=sqlite:////data/round_again.db
+  #     - EMAIL_HOST=${EMAIL_HOST}
+  #     - EMAIL_PORT=${EMAIL_PORT}
+  #     - EMAIL_USER=${EMAIL_USER}
+  #     - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+  #     - EMAIL_FROM=${EMAIL_FROM}
+  #     - USER_EMAIL=${USER_EMAIL}
+  #   restart: unless-stopped
+  #   command: poetry run python run.py --tailwind
+
+volumes:
+  node_modules:

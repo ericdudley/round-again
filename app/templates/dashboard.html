@@ -3,113 +3,112 @@
 {% block title %}Dashboard | Round Again{% endblock %}
 
 {% block content %}
-<div class="container mx-auto py-6">
+<div class="container mx-auto py-6 px-4">
   <div class="mb-6">
     <h1 class="text-2xl font-bold">Dashboard</h1>
-    <p class="text-gray-600">Welcome to Round Again - stay connected with the people who matter.</p>
+    <p class="text-base-content opacity-70">Welcome to Round Again - stay connected with the people who matter.</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <!-- Summary card - Overdue -->
-    <div class="bg-red-50 rounded-lg shadow p-6 border-l-4 border-red-500">
-      <h3 class="text-lg font-medium text-red-800">Overdue</h3>
-      <div class="mt-2 text-3xl font-bold text-red-600">
-        {{ overdue_count|default(0) }}
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h3 class="card-title text-error">Overdue</h3>
+        <div class="stat-value text-error">{{ overdue_count|default(0) }}</div>
+        <p class="text-sm text-error">contacts need your attention</p>
+        {% if overdue_count|default(0) > 0 %}
+          <div class="card-actions justify-end">
+            <a href="{{ url_for('contacts.list_contacts', filter='overdue') }}" class="btn btn-sm btn-error btn-outline">
+              View all overdue →
+            </a>
+          </div>
+        {% endif %}
       </div>
-      <div class="mt-1 text-sm text-red-700">
-        contacts need your attention
-      </div>
-      {% if overdue_count|default(0) > 0 %}
-        <a href="{{ url_for('contacts.list_contacts', filter='overdue') }}" 
-           class="mt-3 inline-block text-sm font-medium text-red-600 hover:text-red-500">
-          View all overdue →
-        </a>
-      {% endif %}
     </div>
 
     <!-- Summary card - Due Soon -->
-    <div class="bg-yellow-50 rounded-lg shadow p-6 border-l-4 border-yellow-500">
-      <h3 class="text-lg font-medium text-yellow-800">Due Soon</h3>
-      <div class="mt-2 text-3xl font-bold text-yellow-600">
-        {{ due_soon_count|default(0) }}
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h3 class="card-title text-warning">Due Soon</h3>
+        <div class="stat-value text-warning">{{ due_soon_count|default(0) }}</div>
+        <p class="text-sm text-warning">contacts due in the next 7 days</p>
+        {% if due_soon_count|default(0) > 0 %}
+          <div class="card-actions justify-end">
+            <a href="{{ url_for('contacts.list_contacts', filter='due') }}" class="btn btn-sm btn-warning btn-outline">
+              View all due soon →
+            </a>
+          </div>
+        {% endif %}
       </div>
-      <div class="mt-1 text-sm text-yellow-700">
-        contacts due in the next 7 days
-      </div>
-      {% if due_soon_count|default(0) > 0 %}
-        <a href="{{ url_for('contacts.list_contacts', filter='due') }}" 
-           class="mt-3 inline-block text-sm font-medium text-yellow-600 hover:text-yellow-500">
-          View all due soon →
-        </a>
-      {% endif %}
     </div>
 
     <!-- Summary card - Total Contacts -->
-    <div class="bg-blue-50 rounded-lg shadow p-6 border-l-4 border-blue-500">
-      <h3 class="text-lg font-medium text-blue-800">Total Contacts</h3>
-      <div class="mt-2 text-3xl font-bold text-blue-600">
-        {{ total_contacts|default(0) }}
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h3 class="card-title text-primary">Total Contacts</h3>
+        <div class="stat-value text-primary">{{ total_contacts|default(0) }}</div>
+        <p class="text-sm text-primary">people in your network</p>
+        <div class="card-actions justify-end">
+          <a href="{{ url_for('contacts.list_contacts') }}" class="btn btn-sm btn-primary btn-outline">
+            View all contacts →
+          </a>
+        </div>
       </div>
-      <div class="mt-1 text-sm text-blue-700">
-        people in your network
-      </div>
-      <a href="{{ url_for('contacts.list_contacts') }}" 
-         class="mt-3 inline-block text-sm font-medium text-blue-600 hover:text-blue-500">
-        View all contacts →
-      </a>
     </div>
   </div>
 
   <!-- Priority Contacts -->
-  <div class="bg-white shadow rounded-lg overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200">
-      <h2 class="text-xl font-medium text-gray-900">Priority Contacts</h2>
-    </div>
-    <div class="divide-y divide-gray-200">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body p-0">
+      <div class="p-4 border-b border-base-300">
+        <h2 class="card-title">Priority Contacts</h2>
+      </div>
       {% if priority_contacts %}
-        {% for contact in priority_contacts %}
-          <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
-            <div>
-              <h3 class="text-lg font-medium text-gray-900">{{ contact.name }}</h3>
-              <div class="mt-1 text-sm text-gray-600">
-                {% if contact.days_until_due < 0 %}
-                  <span class="text-red-600 font-medium">{{ abs(contact.days_until_due) }} days overdue</span>
-                {% elif contact.days_until_due == 0 %}
-                  <span class="text-yellow-600 font-medium">Due today</span>
-                {% else %}
-                  <span class="text-gray-600">Due in {{ contact.days_until_due }} days</span>
-                {% endif %}
+        <div class="divide-y divide-base-300">
+          {% for contact in priority_contacts %}
+            <div class="p-4 flex items-center justify-between hover:bg-base-200">
+              <div>
+                <h3 class="font-medium">{{ contact.name }}</h3>
+                <div class="mt-1 text-sm opacity-70">
+                  {% if contact.days_until_due < 0 %}
+                    <span class="text-error font-medium">{{ abs(contact.days_until_due) }} days overdue</span>
+                  {% elif contact.days_until_due == 0 %}
+                    <span class="text-warning font-medium">Due today</span>
+                  {% else %}
+                    <span>Due in {{ contact.days_until_due }} days</span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="join">
+                <button
+                  class="btn btn-sm btn-primary join-item"
+                  hx-get="{{ url_for('interactions.new_form', contact_id=contact.id) }}"
+                  hx-target="#modal-content"
+                  hx-trigger="click"
+                  onclick="showModal()">
+                  Log Contact
+                </button>
+                <button
+                  class="btn btn-sm btn-ghost join-item"
+                  hx-get="{{ url_for('contacts.detail', contact_id=contact.id) }}"
+                  hx-target="#modal-content"
+                  hx-trigger="click"
+                  onclick="showModal()">
+                  Details
+                </button>
               </div>
             </div>
-            <div class="flex space-x-3">
-              <button
-                class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                hx-get="{{ url_for('interactions.new_form', contact_id=contact.id) }}"
-                hx-target="#modal-content"
-                hx-trigger="click"
-                onclick="document.getElementById('modal').classList.remove('hidden')">
-                Log Contact
-              </button>
-              <button
-                class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                hx-get="{{ url_for('contacts.detail', contact_id=contact.id) }}"
-                hx-target="#modal-content"
-                hx-trigger="click"
-                onclick="document.getElementById('modal').classList.remove('hidden')">
-                Details
-              </button>
-            </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       {% else %}
-        <div class="px-6 py-10 text-center">
-          <p class="text-gray-500 mb-4">No priority contacts to display</p>
+        <div class="p-10 text-center">
+          <p class="text-base-content opacity-70 mb-4">No priority contacts to display</p>
           <button
-            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            class="btn btn-primary"
             hx-get="{{ url_for('contacts.new_form') }}"
             hx-target="#modal-content"
             hx-trigger="click"
-            onclick="document.getElementById('modal').classList.remove('hidden')">
+            onclick="showModal()">
             Add Contact
           </button>
         </div>
@@ -118,39 +117,41 @@
   </div>
 
   <!-- Recent Interactions -->
-  <div class="mt-8 bg-white shadow rounded-lg overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200">
-      <h2 class="text-xl font-medium text-gray-900">Recent Interactions</h2>
-    </div>
-    <div class="divide-y divide-gray-200">
+  <div class="mt-8 card bg-base-100 shadow-xl">
+    <div class="card-body p-0">
+      <div class="p-4 border-b border-base-300">
+        <h2 class="card-title">Recent Interactions</h2>
+      </div>
       {% if recent_interactions %}
-        {% for interaction in recent_interactions %}
-          <div class="px-6 py-4 hover:bg-gray-50">
-            <div class="flex justify-between">
-              <h3 class="text-lg font-medium text-gray-900">{{ interaction.contact.name }}</h3>
-              <span class="text-sm text-gray-500">
-                {{ interaction.interaction_date|datetime }}
-              </span>
+        <div class="divide-y divide-base-300">
+          {% for interaction in recent_interactions %}
+            <div class="p-4 hover:bg-base-200">
+              <div class="flex justify-between">
+                <h3 class="font-medium">{{ interaction.contact.name }}</h3>
+                <span class="text-sm opacity-70">
+                  {{ interaction.interaction_date|datetime }}
+                </span>
+              </div>
+              <div class="mt-1 flex items-center">
+                <span class="badge badge-primary">
+                  {{ interaction.interaction_type.value|title }}
+                </span>
+                {% if interaction.notes %}
+                  <span class="ml-3 text-sm opacity-70">{{ interaction.notes|truncate(70) }}</span>
+                {% endif %}
+              </div>
             </div>
-            <div class="mt-1 flex items-center">
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                {{ interaction.interaction_type.value|title }}
-              </span>
-              {% if interaction.notes %}
-                <span class="ml-3 text-sm text-gray-600">{{ interaction.notes|truncate(70) }}</span>
-              {% endif %}
-            </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       {% else %}
-        <div class="px-6 py-10 text-center">
-          <p class="text-gray-500 mb-4">No recent interactions</p>
+        <div class="p-10 text-center">
+          <p class="text-base-content opacity-70 mb-4">No recent interactions</p>
           <button
-            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            class="btn btn-primary"
             hx-get="{{ url_for('contacts.new_form') }}"
             hx-target="#modal-content"
             hx-trigger="click"
-            onclick="document.getElementById('modal').classList.remove('hidden')">
+            onclick="showModal()">
             Add Contact
           </button>
         </div>

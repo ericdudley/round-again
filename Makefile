@@ -2,7 +2,7 @@
 
 .PHONY: help setup install update clean lint format test \
 	run dev docker-build docker-up docker-down docker-logs \
-	db-init db-migrate email-test
+	db-init db-migrate email-test css-build css-watch
 
 # Color codes
 COLOR_RESET = \033[0m
@@ -33,11 +33,13 @@ help: ## Show this help message
 	@echo ""
 
 # Setup commands
-setup: ## Initialize project (install poetry and dependencies)
+setup: ## Initialize project (install poetry, npm and dependencies)
 	@echo "$(COLOR_BOLD)Setting up the project...$(COLOR_RESET)"
 	@pip install poetry
 	@$(POETRY) install
+	@npm install
 	@cp -n .env.example .env || true
+	@$(MAKE) css-build
 	@echo "$(COLOR_GREEN)Setup complete. Edit .env file with your configuration.$(COLOR_RESET)"
 
 install: ## Install dependencies
@@ -83,9 +85,9 @@ run: ## Run production server
 	@echo "$(COLOR_BOLD)Starting production server...$(COLOR_RESET)"
 	@$(POETRY) run gunicorn --bind 0.0.0.0:5000 run:app
 
-dev: ## Run development server with hot reloading
-	@echo "$(COLOR_BOLD)Starting development server...$(COLOR_RESET)"
-	@FLASK_ENV=development $(FLASK) run --host=0.0.0.0 --port=5001 --debug
+dev: ## Run development server with hot reloading and Tailwind watch
+	@echo "$(COLOR_BOLD)Starting development server with Tailwind watch...$(COLOR_RESET)"
+	@FLASK_ENV=development $(PYTHON) run.py --tailwind
 
 shell: ## Start a Python shell with application context
 	@echo "$(COLOR_BOLD)Starting Python shell with app context...$(COLOR_RESET)"
@@ -147,3 +149,13 @@ scheduler-test: ## Run the scheduler once to test reminder generation
 	@echo "$(COLOR_BOLD)Testing scheduler...$(COLOR_RESET)"
 	@$(PYTHON) -c "from app import create_app; from app.services.scheduler import SchedulerService; from sqlalchemy.orm import sessionmaker; app = create_app(); session = sessionmaker(bind=app.db_engine)(); scheduler = SchedulerService(app, app.db_engine); with app.app_context(): scheduler.send_daily_reminders()"
 	@echo "$(COLOR_GREEN)Scheduler test complete$(COLOR_RESET)"
+
+# Tailwind CSS commands
+css-build: ## Build Tailwind CSS
+	@echo "$(COLOR_BOLD)Building Tailwind CSS...$(COLOR_RESET)"
+	@npx tailwindcss -i ./app/static/css/input.css -o ./app/static/css/styles.css --minify
+	@echo "$(COLOR_GREEN)Tailwind CSS built$(COLOR_RESET)"
+
+css-watch: ## Watch and compile Tailwind CSS on file changes
+	@echo "$(COLOR_BOLD)Starting Tailwind CSS watcher...$(COLOR_RESET)"
+	@npx tailwindcss -i ./app/static/css/input.css -o ./app/static/css/styles.css --watch

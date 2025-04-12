@@ -1,43 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Round Again{% endblock %}</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- HTMX for interactive UI -->
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
-    <!-- Custom CSS -->
+    <!-- Tailwind CSS (locally built) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <!-- Favicon -->
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col" hx-boost>
+<body class="min-h-screen flex flex-col bg-base-200" hx-boost>
     <!-- Navigation header -->
-    <nav class="bg-blue-600 text-white">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ url_for('dashboard.index') }}" class="text-xl font-bold">Round Again</a>
-                    <div class="hidden md:flex space-x-4">
-                        <a href="{{ url_for('dashboard.index') }}" class="hover:text-blue-200 px-3 py-2 rounded-md">Dashboard</a>
-                        <a href="{{ url_for('contacts.list_contacts') }}" class="hover:text-blue-200 px-3 py-2 rounded-md">Contacts</a>
-                    </div>
+    <div class="navbar bg-primary text-primary-content">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <!-- Add user profile/logout buttons here if needed -->
-                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('contacts.list_contacts') }}">Contacts</a></li>
+                </ul>
             </div>
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-ghost text-xl">Round Again</a>
         </div>
-    </nav>
-
-    <!-- Mobile menu (hidden by default) -->
-    <div class="md:hidden bg-blue-700 hidden" id="mobile-menu">
-        <div class="px-2 pt-2 pb-3 space-y-1">
-            <a href="{{ url_for('dashboard.index') }}" class="text-white block px-3 py-2 rounded-md">Dashboard</a>
-            <a href="{{ url_for('contacts.list_contacts') }}" class="text-white block px-3 py-2 rounded-md">Contacts</a>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('contacts.list_contacts') }}">Contacts</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <!-- Add user profile/logout buttons here if needed -->
         </div>
     </div>
 
@@ -46,12 +43,12 @@
         {% if messages %}
             <div class="container mx-auto px-4 mt-4">
                 {% for category, message in messages %}
-                    <div class="p-4 mb-4 rounded-md 
-                        {% if category == 'success' %}bg-green-100 text-green-700 border-green-400{% endif %}
-                        {% if category == 'error' %}bg-red-100 text-red-700 border-red-400{% endif %}
-                        {% if category == 'info' %}bg-blue-100 text-blue-700 border-blue-400{% endif %}
-                        {% if category == 'warning' %}bg-yellow-100 text-yellow-700 border-yellow-400{% endif %}
-                        {% if not category or category == 'message' %}bg-gray-100 text-gray-700 border-gray-400{% endif %}">
+                    <div class="alert mb-4 
+                        {% if category == 'success' %}alert-success{% endif %}
+                        {% if category == 'error' %}alert-error{% endif %}
+                        {% if category == 'info' %}alert-info{% endif %}
+                        {% if category == 'warning' %}alert-warning{% endif %}
+                        {% if not category or category == 'message' %}alert-info{% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -65,12 +62,10 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-200 py-6 mt-8">
-        <div class="container mx-auto px-4">
-            <div class="text-center text-gray-600 text-sm">
-                <p>&copy; {{ now.year }} Round Again. All rights reserved.</p>
-                <p class="mt-2">A simple app to help you maintain your important relationships.</p>
-            </div>
+    <footer class="footer footer-center p-6 bg-base-300 text-base-content mt-8">
+        <div>
+            <p>&copy; {{ now.year }} Round Again. All rights reserved.</p>
+            <p>A simple app to help you maintain your important relationships.</p>
         </div>
     </footer>
 

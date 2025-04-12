@@ -10,3 +10,13 @@ htmlcov/
 docs/_build/
 *.db
 .env
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Tailwind CSS
+app/static/css/styles.css
+.parcel-cache/

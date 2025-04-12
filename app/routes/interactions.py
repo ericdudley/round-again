@@ -1,13 +1,15 @@
+import os
+
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from app.models import Contact, Interaction, InteractionType
+from app.models import Contact, Interaction, InteractionType, init_db
 from sqlalchemy import create_engine
 
 bp = Blueprint('interactions', __name__, url_prefix='/interactions')
 
 # Create engine and session factory
-engine = create_engine('sqlite:///round_again.db')
+engine = init_db(   os.environ.get("DATABASE_URL"))
 Session = sessionmaker(bind=engine)
 
 @bp.route('/add/<int:contact_id>', methods=['GET', 'POST'])

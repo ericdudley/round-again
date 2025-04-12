@@ -4,6 +4,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import enum
 import os
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 Base = declarative_base()
 
@@ -84,7 +88,6 @@ class Interaction(Base):
     
     contact = relationship("Contact", back_populates="interactions")
 
-# Create or connect to database
 def init_db(db_path='round_again.db'):
     # Get absolute path
     abs_path = os.path.abspath(db_path)
@@ -96,6 +99,7 @@ def init_db(db_path='round_again.db'):
     
     # Create db connection
     db_uri = f'sqlite:///{abs_path}'
+    logger.info(f"Initializing database: {db_uri}")
     engine = create_engine(db_uri)
     Base.metadata.create_all(engine)
     return engine

@@ -1,13 +1,15 @@
+import os
+
 from flask import Blueprint, render_template, current_app
 from sqlalchemy.orm import sessionmaker
-from app.models import Contact, Interaction
+from app.models import Contact, Interaction, init_db
 from sqlalchemy import create_engine, desc
 from datetime import datetime, timedelta
 
 bp = Blueprint('dashboard', __name__)
 
 # Create engine and session factory
-engine = create_engine('sqlite:///round_again.db')
+engine = init_db(os.environ.get("DATABASE_URL"))
 Session = sessionmaker(bind=engine)
 
 @bp.route('/')

@@ -42,6 +42,28 @@ Add development dependencies:
 poetry add --group dev pytest pytest-flask black flake8
 ```
 
+## 5. Install Node.js and Tailwind CSS
+
+Ensure you have Node.js installed:
+```bash
+# Check if Node.js is installed
+node -v
+```
+
+If not installed, download and install from [nodejs.org](https://nodejs.org/).
+
+Install Tailwind CSS:
+```bash
+# Initialize package.json if it doesn't exist
+npm init -y
+
+# Install Tailwind CSS
+npm install -D tailwindcss
+
+# Initialize Tailwind CSS configuration
+npx tailwindcss init
+```
+
 ## 5. Project Setup
 
 Create the basic directory structure:
@@ -205,15 +227,37 @@ if __name__ == '__main__':
 
 ## 11. Development Workflow
 
-### Start a development server:
+### Start a development server with Tailwind CSS watch mode:
 ```bash
-poetry run flask run
+# Using make
+make dev
+
+# Directly using Python
+poetry run python run.py --tailwind
+```
+
+### Build Tailwind CSS:
+```bash
+# Using make
+make css-build
+
+# Directly using npm
+npx tailwindcss -i ./app/static/css/input.css -o ./app/static/css/styles.css --minify
+```
+
+### Watch Tailwind CSS for changes:
+```bash
+# Using make
+make css-watch
+
+# Directly using npm
+npx tailwindcss -i ./app/static/css/input.css -o ./app/static/css/styles.css --watch
 ```
 
 ### Run in a Poetry shell:
 ```bash
 poetry shell
-flask run
+python run.py --tailwind
 ```
 
 ### Run tests:

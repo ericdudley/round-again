@@ -6,10 +6,10 @@
  * Open the modal
  * @param {string} modalId - ID of the modal element
  */
-function openModal(modalId = 'modal') {
+function showModal(modalId = 'modal') {
   const modal = document.getElementById(modalId);
   if (modal) {
-    modal.classList.remove('hidden');
+    modal.classList.add('modal-open');
   }
 }
 
@@ -17,10 +17,10 @@ function openModal(modalId = 'modal') {
  * Close the modal
  * @param {string} modalId - ID of the modal element
  */
-function closeModal(modalId = 'modal') {
+function hideModal(modalId = 'modal') {
   const modal = document.getElementById(modalId);
   if (modal) {
-    modal.classList.add('hidden');
+    modal.classList.remove('modal-open');
   }
 }
 
@@ -32,7 +32,7 @@ function setupModalListeners(modalId = 'modal') {
   // Close modal when escape key is pressed
   document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
-      closeModal(modalId);
+      hideModal(modalId);
     }
   });
   
@@ -41,8 +41,12 @@ function setupModalListeners(modalId = 'modal') {
   if (modal) {
     modal.addEventListener('click', function(event) {
       if (event.target === modal) {
-        closeModal(modalId);
+        hideModal(modalId);
       }
     });
   }
 }
+
+// Backward compatibility with old function names
+const openModal = showModal;
+const closeModal = hideModal;

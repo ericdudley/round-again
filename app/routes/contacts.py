@@ -1,7 +1,9 @@
+import os
+
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from app.models import Contact, FrequencyUnit, Interaction, InteractionType
+from app.models import Contact, FrequencyUnit, Interaction, InteractionType, init_db
 from sqlalchemy import create_engine
 from logging import getLogger
 
@@ -11,7 +13,7 @@ logger = getLogger(__name__)
 bp = Blueprint('contacts', __name__, url_prefix='/contacts')
 
 # Create engine and session factory
-engine = create_engine('sqlite:///round_again.db')
+engine = init_db(os.environ.get("DATABASE_URL"))
 Session = sessionmaker(bind=engine)
 
 @bp.route('/')

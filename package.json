@@ -1,0 +1,15 @@
+{
+  "name": "roundagain",
+  "version": "1.0.0",
+  "description": "A relationship management application",
+  "scripts": {
+    "build": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/styles.css",
+    "watch": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/styles.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.8",
+    "daisyui": "^5.0.0-beta.8",
+    "tailwindcss": "^4.0.8",
+    "tailwindcss-animated": "^2.0.0"
+  }
+}

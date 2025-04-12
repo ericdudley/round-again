@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "tailwindcss-animated";
+@plugin "daisyui" {
+  themes: nord --default, nord --prefersdark;
+}
+

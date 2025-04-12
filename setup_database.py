@@ -3,8 +3,7 @@
 """
 This script handles:
 1. Creating the database tables
-2. Migrating data from old "keep_in_touch.db" (if it exists)
-3. Adding sample data (optional)
+2. Adding sample data (optional)
 """
 
 import os
@@ -28,22 +27,6 @@ def setup_database(add_samples=False, force=False):
     engine = init_db(db_path)
     Base.metadata.create_all(engine)
     print("Database tables created successfully!")
-    
-    # Try to migrate data from old database
-    old_db_path = 'keep_in_touch.db'
-    if os.path.exists(old_db_path):
-        print(f"Found old database {old_db_path}")
-        migrate_choice = input("Do you want to migrate data from old database? (y/n): ").strip().lower()
-        
-        if migrate_choice == 'y':
-            print("Migrating data...")
-            try:
-                # Import here to avoid circular imports
-                from migrate_db import migrate_data
-                migrate_data()
-            except Exception as e:
-                print(f"Error during migration: {str(e)}")
-                print("Continuing with setup...")
     
     # Add sample data if requested
     if add_samples:

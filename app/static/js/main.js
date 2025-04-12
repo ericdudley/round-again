@@ -1,8 +1,9 @@
 // Main JavaScript file for the application
 
-// Toggle mobile menu
+// DOM ready event listener
 document.addEventListener('DOMContentLoaded', function() {
-  // Mobile menu toggle functionality can be added here
+  // Setup modal functionality
+  setupModalListeners();
   
-  // Initialize any other JavaScript functionality
-});
+  // Mobile menu toggle functionality can be added here
+});;

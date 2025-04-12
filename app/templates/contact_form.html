@@ -5,7 +5,7 @@
         {% if contact %}Edit Contact{% else %}Add New Contact{% endif %}
       </h3>
       
-      <form id="contact-form" class="mt-4" hx-post="{{ url_for('contacts.create') if not contact else url_for('contacts.update', contact_id=contact.id) }}" hx-target="#contact-list" hx-swap="outerHTML">
+      <form id="contact-form" class="mt-4" action="{{ url_for('contacts.create') if not contact else url_for('contacts.update', contact_id=contact.id) }}" method="post">
         {% if contact %}
           <input type="hidden" name="id" value="{{ contact.id }}">
         {% endif %}

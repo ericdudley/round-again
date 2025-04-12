@@ -82,24 +82,36 @@
               </div>
             </div>
             <div class="flex space-x-3">
-              <a href="{{ url_for('interactions.add_interaction', contact_id=contact.id) }}"
-                 class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+              <button
+                class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                hx-get="{{ url_for('interactions.new_form', contact_id=contact.id) }}"
+                hx-target="#modal-content"
+                hx-trigger="click"
+                onclick="document.getElementById('modal').classList.remove('hidden')">
                 Log Contact
-              </a>
-              <a href="{{ url_for('contacts.detail', contact_id=contact.id) }}"
-                 class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              </button>
+              <button
+                class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                hx-get="{{ url_for('contacts.detail', contact_id=contact.id) }}"
+                hx-target="#modal-content"
+                hx-trigger="click"
+                onclick="document.getElementById('modal').classList.remove('hidden')">
                 Details
-              </a>
+              </button>
             </div>
           </div>
         {% endfor %}
       {% else %}
         <div class="px-6 py-10 text-center">
           <p class="text-gray-500 mb-4">No priority contacts to display</p>
-          <a href="{{ url_for('contacts.list_contacts') }}"
-             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-            Manage Contacts
-          </a>
+          <button
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            hx-get="{{ url_for('contacts.new_form') }}"
+            hx-target="#modal-content"
+            hx-trigger="click"
+            onclick="document.getElementById('modal').classList.remove('hidden')">
+            Add Contact
+          </button>
         </div>
       {% endif %}
     </div>
@@ -133,13 +145,19 @@
       {% else %}
         <div class="px-6 py-10 text-center">
           <p class="text-gray-500 mb-4">No recent interactions</p>
-          <a href="{{ url_for('contacts.list_contacts') }}"
-             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-            Start Contacting
-          </a>
+          <button
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            hx-get="{{ url_for('contacts.new_form') }}"
+            hx-target="#modal-content"
+            hx-trigger="click"
+            onclick="document.getElementById('modal').classList.remove('hidden')">
+            Add Contact
+          </button>
         </div>
       {% endif %}
     </div>
   </div>
 </div>
+
+{% include 'modal.html' %}
 {% endblock %}

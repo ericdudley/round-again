@@ -1,10 +1,8 @@
-name: Docker Build and Push
+name: Docker Build and Push (Release)
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  release:
+    types: [published]
   # Optional: Allow manual trigger from GitHub UI
   workflow_dispatch:
 
@@ -31,16 +29,18 @@ jobs:
         with:
           images: ericdudley/round-again
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
+            # Latest tag for releases
+            type=raw,value=latest
+            # Semantic versioning tags
             type=semver,pattern={{version}}
-            type=sha,format=short
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

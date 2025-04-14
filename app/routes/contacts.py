@@ -7,6 +7,8 @@ from app.models import Contact, FrequencyUnit, Interaction, InteractionType, ini
 from sqlalchemy import create_engine
 from logging import getLogger
 
+from app.time_utils import curr_time
+
 # Create a logger
 logger = getLogger(__name__)
 
@@ -24,11 +26,11 @@ def list_contacts():
         filter_type = request.args.get('filter', 'all')
         
         # Cached time for consistent calculations
-        now = datetime.utcnow()
+        now = curr_time()
         
         if filter_type == 'due':
             # Filter for due contacts
-            contacts = [contact for contact in session.query(Contact).all() if contact.is_due]
+            contacts = [contact for contact in session.query(Contact).all() if contact.is_due_soon]
         elif filter_type == 'overdue':
             # Filter for overdue contacts (same as due for now)
             contacts = [contact for contact in session.query(Contact).all() if contact.is_due]
@@ -83,7 +85,7 @@ def detail(contact_id):
     session = Session()
     try:
         # Current time for consistency
-        now = datetime.utcnow()
+        now = curr_time()
         
         contact = session.query(Contact).get(contact_id)
         if not contact:

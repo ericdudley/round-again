@@ -6,6 +6,8 @@ from datetime import datetime
 from app.models import Contact, Interaction, InteractionType, init_db
 from sqlalchemy import create_engine
 
+from app.time_utils import curr_time
+
 bp = Blueprint('interactions', __name__, url_prefix='/interactions')
 
 # Create engine and session factory
@@ -18,7 +20,7 @@ def add_interaction(contact_id):
     session = Session()
     try:
         # Current time for consistency
-        now = datetime.utcnow()
+        now = curr_time()
         
         if request.method == 'POST':
             interaction_date_str = datetime.strptime(request.form.get('interaction_date'), '%Y-%m-%dT%H:%M')
@@ -35,7 +37,7 @@ def add_interaction(contact_id):
             session.commit()
             
             flash('Interaction logged successfully!', 'success')
-            return redirect(url_for('contacts.detail', contact_id=contact_id))
+            return redirect(url_for('contacts.list_contacts', contact_id=contact_id))
         
         # Get contact for form
         contact = session.query(Contact).get(contact_id)
@@ -62,7 +64,7 @@ def new_form(contact_id):
     session = Session()
     try:
         # Current time for consistency
-        now = datetime.utcnow()
+        now = curr_time()
         
         contact = session.query(Contact).get(contact_id)
         if not contact:

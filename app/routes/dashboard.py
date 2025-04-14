@@ -6,6 +6,8 @@ from app.models import Contact, Interaction, init_db
 from sqlalchemy import create_engine, desc
 from datetime import datetime, timedelta
 
+from app.time_utils import curr_time
+
 bp = Blueprint('dashboard', __name__)
 
 # Create engine and session factory
@@ -21,7 +23,7 @@ def index():
         all_contacts = session.query(Contact).all()
         
         # Cache the current time for consistent calculations
-        now = datetime.utcnow()
+        now = curr_time()
         
         # Count overdue contacts - contacts already due
         overdue_contacts = [contact for contact in all_contacts if contact.is_due]

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class SchedulerService:
     def __init__(self, app, db_engine):
         self.app = app
-        self.Session = sessionmaker(bind=db_engine)
+        self.Session = sessionmaker(bind=db_engine, expire_on_commit=True)
         self.scheduler = BackgroundScheduler()
         
         # Add jobs

@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.models import Base, Contact, Interaction, FrequencyUnit, InteractionType
+from app.time_utils import curr_time
+
 
 def add_sample_data():
     """Add sample data to the database"""
@@ -68,7 +70,7 @@ def add_sample_data():
         session.flush()
         
         # Create interactions for contacts
-        now = datetime.utcnow()
+        now = curr_time()
         
         # John Smith interactions (one overdue)
         session.add(Interaction(

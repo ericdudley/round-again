@@ -5,6 +5,8 @@ from datetime import datetime
 from flask import current_app, render_template
 import logging
 
+from app.time_utils import curr_time
+
 logger = logging.getLogger(__name__)
 
 def send_email(subject, to_email, html_content):
@@ -51,7 +53,7 @@ def send_reminder_email(due_contacts):
     html_content = render_template(
         'emails/daily_reminder.html',
         contacts=sorted_contacts,
-        today=datetime.utcnow().date()
+        today=curr_time().date()
     )
     
     return send_email(subject, user_email, html_content)

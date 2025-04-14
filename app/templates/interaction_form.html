@@ -3,7 +3,7 @@
     Log Interaction with {{ contact.name }}
   </h3>
   
-  <form id="interaction-form" hx-post="{{ url_for('interactions.add_interaction', contact_id=contact.id) }}" hx-target="#contact-list" hx-swap="outerHTML">
+  <form id="interaction-form" action="{{ url_for('interactions.add_interaction', contact_id=contact.id) }}" method="post">
     <input type="hidden" name="contact_id" value="{{ contact.id }}">
     
     <div class="form-control mb-4">

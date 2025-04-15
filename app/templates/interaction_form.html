@@ -1,57 +1,59 @@
 <div class="p-4">
-  <h3 class="font-medium text-lg mb-4">
-    Log Interaction with {{ contact.name }}
-  </h3>
-  
-  <form id="interaction-form" action="{{ url_for('interactions.add_interaction', contact_id=contact.id) }}" method="post">
-    <input type="hidden" name="contact_id" value="{{ contact.id }}">
-    
-    <div class="form-control mb-4">
-      <label for="interaction_type" class="label">
-        <span class="label-text">Interaction Type</span>
-      </label>
-      <select id="interaction_type" name="interaction_type" class="select select-bordered w-full" required>
-        <option value="" selected disabled>Select type</option>
-        {% for type in interaction_types %}
-          <option value="{{ type.value }}">{{ type.value|title }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    
-    <div class="form-control mb-4">
-      <label for="interaction_date" class="label">
-        <span class="label-text">Date</span>
-      </label>
-      <input type="datetime-local" id="interaction_date" name="interaction_date" 
-             value="{{ now.strftime('%Y-%m-%dT%H:%M') }}"
-             class="input input-bordered w-full" required>
-    </div>
-    
-    <div class="form-control mb-4">
-      <label for="notes" class="label">
-        <span class="label-text">Notes</span>
-      </label>
-      <textarea id="notes" name="notes" rows="3" 
-                class="textarea textarea-bordered w-full" 
-                placeholder="What did you talk about?"></textarea>
-    </div>
-    
-    <div class="mt-6 flex justify-end gap-3">
-      <button type="button"
-              class="btn btn-ghost"
-              onclick="hideModal()">
-        Cancel
-      </button>
-      <button type="submit"
-              class="btn btn-primary">
-        Log Interaction
-      </button>
-    </div>
-  </form>
+    <h3 class="font-medium text-lg mb-4">
+        Log Interaction with {{ contact.name }}
+    </h3>
+
+    <form id="interaction-form" hx-post="{{ url_for('interactions.add_interaction', contact_id=contact.id) }}"
+          hx-on:htmx:after-on-load="if(event.detail.successful) closeModal();"
+    >
+        <input type="hidden" name="contact_id" value="{{ contact.id }}">
+
+        <div class="form-control mb-4">
+            <label for="interaction_type" class="label">
+                <span class="label-text">Interaction Type</span>
+            </label>
+            <select id="interaction_type" name="interaction_type" class="select select-bordered w-full" required>
+                <option value="" selected disabled>Select type</option>
+                {% for type in interaction_types %}
+                <option value="{{ type.value }}">{{ type.value|title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-control mb-4">
+            <label for="interaction_date" class="label">
+                <span class="label-text">Date</span>
+            </label>
+            <input type="datetime-local" id="interaction_date" name="interaction_date"
+                   value="{{ now.strftime('%Y-%m-%dT%H:%M') }}"
+                   class="input input-bordered w-full" required>
+        </div>
+
+        <div class="form-control mb-4">
+            <label for="notes" class="label">
+                <span class="label-text">Notes</span>
+            </label>
+            <textarea id="notes" name="notes" rows="3"
+                      class="textarea textarea-bordered w-full"
+                      placeholder="What did you talk about?"></textarea>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3">
+            <button type="button"
+                    class="btn btn-ghost"
+                    onclick="hideModal()">
+                Cancel
+            </button>
+            <button type="submit"
+                    class="btn btn-primary">
+                Log Interaction
+            </button>
+        </div>
+    </form>
 </div>
 
 <script>
-  document.getElementById('interaction-form').addEventListener('submit', function(event) {
-    hideModal();
-  });
+    document.getElementById('interaction-form').addEventListener('submit', function(event) {
+      hideModal();
+    });
 </script>

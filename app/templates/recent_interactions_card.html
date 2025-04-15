@@ -1,0 +1,41 @@
+<div class="mt-8 card bg-base-100 shadow-xl">
+    <div class="card-body p-0">
+        <div class="p-4 border-b border-base-300">
+            <h2 class="card-title">Recent Interactions</h2>
+        </div>
+        {% if recent_interactions %}
+        <div class="divide-y divide-base-300">
+            {% for interaction in recent_interactions %}
+            <div class="p-4 hover:bg-base-200">
+                <div class="flex justify-between">
+                    <h3 class="font-medium">{{ interaction.contact.name }}</h3>
+                    <span class="text-sm opacity-70">
+                  {{ interaction.interaction_date|datetime }}
+                </span>
+                </div>
+                <div class="mt-1 flex items-center">
+                <span class="badge badge-primary">
+                  {{ interaction.interaction_type.value|title }}
+                </span>
+                    {% if interaction.notes %}
+                    <span class="ml-3 text-sm opacity-70">{{ interaction.notes|truncate(70) }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-10 text-center">
+            <p class="text-base-content opacity-70 mb-4">No recent interactions</p>
+            <button
+                    class="btn btn-primary"
+                    hx-get="{{ url_for('contacts.new_form') }}"
+                    hx-target="#modal-content"
+                    hx-trigger="click"
+                    onclick="showModal()">
+                Add Contact
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>

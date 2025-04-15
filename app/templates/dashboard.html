@@ -81,14 +81,22 @@
                             {% endif %}
                         </div>
                     </div>
-                    <button
-                            class="btn btn-sm btn-primary join-item"
-                            hx-get="{{ url_for('interactions.new_form', contact_id=contact.id) }}"
-                            hx-target="#modal-content"
-                            hx-trigger="click"
-                            onclick="showModal()">
-                        Log Contact
-                    </button>
+                    <div class="join">
+                        <a
+                                class="btn btn-sm btn-ghost join-item"
+                                href="{{ url_for('contacts.detail_page', contact_id=contact.id) }}"
+                        >
+                            View
+                        </a>
+                        <button
+                                class="btn btn-sm btn-primary join-item"
+                                hx-get="{{ url_for('interactions.new_form', contact_id=contact.id) }}"
+                                hx-target="#modal-content"
+                                hx-trigger="click"
+                                onclick="showModal()">
+                            Log Contact
+                        </button>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -109,47 +117,10 @@
     </div>
 
     <!-- Recent Interactions -->
-    <div class="mt-8 card bg-base-100 shadow-xl">
-        <div class="card-body p-0">
-            <div class="p-4 border-b border-base-300">
-                <h2 class="card-title">Recent Interactions</h2>
-            </div>
-            {% if recent_interactions %}
-            <div class="divide-y divide-base-300">
-                {% for interaction in recent_interactions %}
-                <div class="p-4 hover:bg-base-200">
-                    <div class="flex justify-between">
-                        <h3 class="font-medium">{{ interaction.contact.name }}</h3>
-                        <span class="text-sm opacity-70">
-                  {{ interaction.interaction_date|datetime }}
-                </span>
-                    </div>
-                    <div class="mt-1 flex items-center">
-                <span class="badge badge-primary">
-                  {{ interaction.interaction_type.value|title }}
-                </span>
-                        {% if interaction.notes %}
-                        <span class="ml-3 text-sm opacity-70">{{ interaction.notes|truncate(70) }}</span>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="p-10 text-center">
-                <p class="text-base-content opacity-70 mb-4">No recent interactions</p>
-                <button
-                        class="btn btn-primary"
-                        hx-get="{{ url_for('contacts.new_form') }}"
-                        hx-target="#modal-content"
-                        hx-trigger="click"
-                        onclick="showModal()">
-                    Add Contact
-                </button>
-            </div>
-            {% endif %}
-        </div>
-    </div>
+    <div hx-get="{{ url_for('dashboard.recent_interactions') }}"
+         hx-trigger="load, interactions from:body"
+    ></div>
+
 </div>
 
 {% include 'modal.html' %}

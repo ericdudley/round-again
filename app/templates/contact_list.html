@@ -92,14 +92,12 @@
                     </td>
                     <td class="text-right">
                         <div class="join">
-                            <button
+                            <a
                                     class="btn btn-sm btn-ghost join-item"
-                                    hx-get="{{ url_for('contacts.detail', contact_id=contact.id) }}"
-                                    hx-target="#modal-content"
-                                    hx-trigger="click"
-                                    onclick="showModal()">
+                                    href="{{ url_for('contacts.detail_page', contact_id=contact.id) }}"
+                            >
                                 View
-                            </button>
+                            </a>
                             <button
                                     class="btn btn-sm btn-primary join-item"
                                     hx-get="{{ url_for('interactions.new_form', contact_id=contact.id) }}"

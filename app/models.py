@@ -1,10 +1,20 @@
-from datetime import datetime, timedelta, UTC
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Enum, create_engine
+import enum
+import logging
+import os
+from datetime import UTC, datetime, timedelta
+
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    create_engine,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-import enum
-import os
-import logging
 
 from app.time_utils import curr_time
 
@@ -15,35 +25,39 @@ Base = declarative_base()
 
 
 class FrequencyUnit(enum.Enum):
-    DAY = 'day'
-    WEEK = 'week'
-    MONTH = 'month'
-    YEAR = 'year'
+    DAY = "day"
+    WEEK = "week"
+    MONTH = "month"
+    YEAR = "year"
 
 
 class InteractionType(enum.Enum):
-    CALL = 'call'
-    VIDEO = 'video'
-    EMAIL = 'email'
-    TEXT = 'text'
-    IN_PERSON = 'in_person'
-    OTHER = 'other'
+    CALL = "call"
+    VIDEO = "video"
+    EMAIL = "email"
+    TEXT = "text"
+    IN_PERSON = "in_person"
+    OTHER = "other"
 
 
 class Contact(Base):
-    __tablename__ = 'contacts'
+    __tablename__ = "contacts"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
     email = Column(String(100))
     phone = Column(String(20))
     frequency_value = Column(Integer, nullable=False, default=1)
-    frequency_unit = Column(Enum(FrequencyUnit), nullable=False, default=FrequencyUnit.MONTH)
+    frequency_unit = Column(
+        Enum(FrequencyUnit), nullable=False, default=FrequencyUnit.MONTH
+    )
     notes = Column(Text)
     created_at = Column(DateTime, default=curr_time)
     updated_at = Column(DateTime, default=curr_time, onupdate=curr_time)
 
-    interactions = relationship("Interaction", back_populates="contact", cascade="all, delete-orphan")
+    interactions = relationship(
+        "Interaction", back_populates="contact", cascade="all, delete-orphan"
+    )
 
     @property
     def next_due_date(self):
@@ -57,14 +71,22 @@ class Contact(Base):
 
         # Calculate next due date based on frequency
         if self.frequency_unit == FrequencyUnit.DAY:
-            return last_interaction.interaction_date + timedelta(days=self.frequency_value)
+            return last_interaction.interaction_date + timedelta(
+                days=self.frequency_value
+            )
         elif self.frequency_unit == FrequencyUnit.WEEK:
-            return last_interaction.interaction_date + timedelta(weeks=self.frequency_value)
+            return last_interaction.interaction_date + timedelta(
+                weeks=self.frequency_value
+            )
         elif self.frequency_unit == FrequencyUnit.MONTH:
             # Simple approximation for months (30 days)
-            return last_interaction.interaction_date + timedelta(days=30 * self.frequency_value)
+            return last_interaction.interaction_date + timedelta(
+                days=30 * self.frequency_value
+            )
         elif self.frequency_unit == FrequencyUnit.YEAR:
-            return last_interaction.interaction_date + timedelta(days=365 * self.frequency_value)
+            return last_interaction.interaction_date + timedelta(
+                days=365 * self.frequency_value
+            )
 
     @property
     def is_due_soon(self):
@@ -87,10 +109,10 @@ class Contact(Base):
 
 
 class Interaction(Base):
-    __tablename__ = 'interactions'
+    __tablename__ = "interactions"
 
     id = Column(Integer, primary_key=True)
-    contact_id = Column(Integer, ForeignKey('contacts.id'), nullable=False)
+    contact_id = Column(Integer, ForeignKey("contacts.id"), nullable=False)
     interaction_type = Column(Enum(InteractionType), nullable=False)
     interaction_date = Column(DateTime, nullable=False, default=curr_time)
     notes = Column(Text)
@@ -98,7 +120,7 @@ class Interaction(Base):
     contact = relationship("Contact", back_populates="interactions")
 
 
-def init_db(db_path='round_again.db'):
+def init_db(db_path="round_again.db"):
     # Get absolute path
     abs_path = os.path.abspath(db_path)
     db_dir = os.path.dirname(abs_path)
@@ -108,7 +130,7 @@ def init_db(db_path='round_again.db'):
         os.makedirs(db_dir)
 
     # Create db connection
-    db_uri = f'sqlite:///{abs_path}'
+    db_uri = f"sqlite:///{abs_path}"
     logger.info(f"Initializing database: {db_uri}")
     engine = create_engine(db_uri)
     Base.metadata.create_all(engine)

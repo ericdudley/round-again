@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{%block title %}Contact | {{contact.name}}{% endblock %}
+
+{% block content %}
+<div id="#modal-content">
+    {%include "contact_detail.html" %}
+</div>
+
+{% include 'modal.html' %}
+
+{% endblock %}
